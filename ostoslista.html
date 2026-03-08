@@ -634,7 +634,8 @@ function tallenna(addToFav) {
   inp.value = '';
   addQty = 1;
   document.getElementById('add-qty').textContent = 1;
-  showView('lista');
+  inp.focus();
+  renderQuickFavs();
 }
 
 // ---- RENDER LISTA ----
