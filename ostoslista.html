@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ostoslista</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0faf4;
+    --surface: #ffffff;
+    --surface2: #e8f5ee;
+    --primary: #2d9e5f;
+    --primary-light: #4aba78;
+    --primary-dark: #1e7a47;
+    --accent: #f4a127;
+    --accent2: #e05c5c;
+    --text: #1a2e22;
+    --text-muted: #6b8f78;
+    --border: #c8e8d4;
+    --checked: #a8d5ba;
+    --shadow: 0 2px 12px rgba(45,158,95,0.10);
+    --shadow-lg: 0 8px 32px rgba(45,158,95,0.16);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--primary);
+    padding: 20px 20px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(30,122,71,0.18);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { font-style: italic; color: #b8f5d0; }
+
+  .tab-bar {
+    display: flex;
+    gap: 6px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 12px;
+    padding: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 8px 6px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: white;
+    color: var(--primary-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  /* CONTENT VIEWS */
+  .view { display: none; padding: 16px; }
+  .view.active { display: block; }
+
+  /* SECTION HEADERS */
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    margin: 16px 0 8px;
+  }
+
+  /* ADD ITEM FORM */
+  .add-form {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: stretch;
+  }
+  .text-input {
+    flex: 1;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .text-input:focus { border-color: var(--primary); }
+  .text-input::placeholder { color: var(--text-muted); font-weight: 500; }
+
+  .qty-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .qty-btn {
+    width: 36px;
+    height: 100%;
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .qty-btn:active { background: var(--surface2); }
+  .qty-display {
+    width: 32px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .action-row {
+    display: flex;
+    gap: 8px;
+  }
+  .btn {
+    flex: 1;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 3px 10px rgba(45,158,95,0.3);
+  }
+  .btn-primary:active { background: var(--primary-dark); transform: scale(0.97); }
+  .btn-fav {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 3px 10px rgba(244,161,39,0.3);
+  }
+  .btn-fav:active { background: #d4891a; transform: scale(0.97); }
+  .btn-danger {
+    background: var(--accent2);
+    color: white;
+  }
+  .btn-sheets {
+    background: var(--surface);
+    color: var(--primary);
+    border: 2px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .btn-sheets:active { background: var(--surface2); }
+
+  /* SHOPPING LIST ITEMS */
+  .item-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .item-card {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+    transition: all 0.25s;
+    border-left: 4px solid transparent;
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .item-card.checked {
+    background: #f4fdf7;
+    border-left-color: var(--checked);
+    opacity: 0.7;
+  }
+
+  .check-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2.5px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+  }
+  .check-btn.done {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  .item-name {
+    flex: 1;
+    font-weight: 700;
+    font-size: 0.97rem;
+    transition: all 0.2s;
+  }
+  .item-card.checked .item-name {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  .item-qty {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 3px 9px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .item-del {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: #ccc;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .item-del:active { background: #fee; color: var(--accent2); }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+  .empty .emoji { font-size: 3rem; margin-bottom: 10px; }
+  .empty p { font-weight: 600; font-size: 0.95rem; }
+
+  /* CLEAR BTN */
+  .clear-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .btn-sm {
+    border: none;
+    border-radius: 8px;
+    padding: 7px 13px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+    background: var(--surface2);
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .btn-sm:active { background: var(--border); }
+  .btn-sm.danger { background: #fdeaea; color: var(--accent2); }
+
+  /* FAVORITES VIEW */
+  .fav-item {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.2s ease;
+  }
+  .fav-name { flex: 1; font-weight: 700; font-size: 0.97rem; }
+  .fav-add-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .fav-add-btn:active { background: var(--primary-dark); transform: scale(0.96); }
+  .fav-del-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: #ccc;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .fav-del-btn:active { background: #fee; color: var(--accent2); }
+
+  /* SHEETS VIEW */
+  .sheets-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+  .sheets-card h3 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .sheets-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .sheets-url-input {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    margin-bottom: 10px;
+  }
+  .sheets-url-input:focus { border-color: var(--primary); }
+
+  .info-box {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-left: 3px solid var(--primary);
+  }
+  .info-box strong { color: var(--primary-dark); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* BADGE */
+  .badge {
+    background: var(--accent);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0;
+  }
+
+  .checked-section { opacity: 0.8; }
+
+  /* Qty in fav add popup */
+  .fav-add-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fav-qty-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+  }
+  .fav-qty-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--primary);
+    cursor: pointer;
+  }
+  .fav-qty-num {
+    width: 26px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.88rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>Osto<span>lista</span> 🛒</h1>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showView('lista')">Lista</button>
+    <button class="tab-btn" onclick="showView('lisaa')">+ Lisää</button>
+    <button class="tab-btn" onclick="showView('suosikit')">⭐ Suosikit</button>
+    <button class="tab-btn" onclick="showView('sheets')">Sheets</button>
+  </div>
+</div>
+
+<!-- LISTA VIEW -->
+<div class="view active" id="view-lista">
+  <div id="lista-content"></div>
+</div>
+
+<!-- LISÄÄ VIEW -->
+<div class="view" id="view-lisaa">
+  <p class="section-title">Lisää tuote</p>
+  <div class="add-form">
+    <div class="input-row">
+      <input class="text-input" id="tuote-input" type="text" placeholder="Tuotteen nimi…" autocomplete="off"
+        onkeydown="if(event.key==='Enter') tallenna(false)">
+      <div class="qty-wrap">
+        <button class="qty-btn" onclick="muutaQty(-1, 'add-qty')">−</button>
+        <span class="qty-display" id="add-qty">1</span>
+        <button class="qty-btn" onclick="muutaQty(1, 'add-qty')">+</button>
+      </div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-primary" onclick="tallenna(false)">💾 Tallenna</button>
+      <button class="btn btn-fav" onclick="tallenna(true)">⭐ + Suosikkeihin</button>
+    </div>
+  </div>
+
+  <p class="section-title">Lisää suosikeista</p>
+  <div id="quick-favs"></div>
+</div>
+
+<!-- SUOSIKIT VIEW -->
+<div class="view" id="view-suosikit">
+  <p class="section-title">Suosikit <span id="fav-count-badge"></span></p>
+  <div id="fav-list"></div>
+</div>
+
+<!-- SHEETS VIEW -->
+<div class="view" id="view-sheets">
+
+  <div class="sheets-card">
+    <h3>📊 Hae lista Google Sheetsistä</h3>
+    <p>Syötä taulukon CSV-linkki ja hae tuotteet suoraan ostoslistalle.</p>
+    <input class="sheets-url-input" id="sheets-url" type="url"
+      placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv">
+    <button class="btn btn-primary" onclick="haeSheets()" style="margin-bottom:10px;">
+      🔄 Hae lista Sheetsistä
+    </button>
+    <div id="sheets-status" style="font-size:0.82rem;color:var(--text-muted);min-height:18px;"></div>
+  </div>
+
+  <div class="sheets-card">
+    <h3>✨ Luo valmis pohja Sheetsiin</h3>
+    <p>Avaa Google Sheets valmiiksi muotoillulla ostoslistapohjalla. Kirjaudu ensin Google-tilillesi.</p>
+    <button class="btn btn-primary" onclick="avaaSheetsPohja()" style="margin-bottom:0;">
+      📋 Avaa Sheets-pohja selaimessa
+    </button>
+  </div>
+
+  <div class="sheets-card">
+    <h3>📖 Ohjeet käyttöönottoon</h3>
+    <div class="info-box">
+      <strong>Vaihe 1:</strong> Paina "Avaa Sheets-pohja" — Google Sheets avautuu uudessa välilehdessä.<br><br>
+      <strong>Vaihe 2:</strong> Valitse <em>Tiedosto → Tee kopio</em> tallentaaksesi pohjan omaan Driveen.<br><br>
+      <strong>Vaihe 3:</strong> Täytä tuotteet: <strong>Tuote | Kpl | Suosikki</strong> (kyllä/ei)<br><br>
+      <strong>Vaihe 4:</strong> Jaa taulukko julkiseksi: <em>Jaa → Kaikki, joilla linkki → Katselija</em><br><br>
+      <strong>Vaihe 5:</strong> Muuta URL-osoite muotoon:<br>
+      <code style="font-size:0.72rem;background:#e8f5ee;padding:5px 8px;border-radius:6px;display:block;margin-top:6px;word-break:break-all;line-height:1.6;">
+        https://docs.google.com/spreadsheets/d/<strong style="color:var(--primary-dark)">[TAULUKON-ID]</strong>/export?format=csv
+      </code><br>
+      <strong>Vaihe 6:</strong> Liitä CSV-linkki ylläolevaan kenttään ja paina "Hae lista" 🎉
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- STATE ----
+let lista = JSON.parse(localStorage.getItem('ostoslista') || '[]');
+let suosikit = JSON.parse(localStorage.getItem('suosikit') || '[]');
+let sheetsUrl = localStorage.getItem('sheetsUrl') || '';
+let addQty = 1;
+let favQtys = {};
+
+function save() {
+  localStorage.setItem('ostoslista', JSON.stringify(lista));
+  localStorage.setItem('suosikit', JSON.stringify(suosikit));
+}
+
+// ---- VIEWS ----
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  const idx = ['lista','lisaa','suosikit','sheets'].indexOf(v);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  if (v === 'lista') renderLista();
+  if (v === 'lisaa') renderQuickFavs();
+  if (v === 'suosikit') renderSuosikit();
+  if (v === 'sheets') {
+    const u = document.getElementById('sheets-url');
+    if (sheetsUrl) u.value = sheetsUrl;
+  }
+}
+
+// ---- QTY ----
+function muutaQty(d, id) {
+  if (id === 'add-qty') {
+    addQty = Math.max(1, addQty + d);
+    document.getElementById('add-qty').textContent = addQty;
+  } else {
+    // fav qty
+    favQtys[id] = Math.max(1, (favQtys[id] || 1) + d);
+    document.getElementById('fq-' + id).textContent = favQtys[id];
+  }
+}
+
+// ---- TALLENNA ----
+function tallenna(addToFav) {
+  const inp = document.getElementById('tuote-input');
+  const name = inp.value.trim();
+  if (!name) { toast('Anna tuotteen nimi!'); return; }
+
+  const item = { id: Date.now(), name, qty: addQty, checked: false };
+  lista.push(item);
+  lista.sort((a,b) => a.name.localeCompare(b.name, 'fi'));
+
+  if (addToFav && !suosikit.find(s => s.name.toLowerCase() === name.toLowerCase())) {
+    suosikit.push({ id: Date.now() + 1, name });
+    suosikit.sort((a,b) => a.name.localeCompare(b.name, 'fi'));
+    toast('✅ Lisätty listalle ja suosikkeihin!');
+  } else {
+    toast('✅ Lisätty listalle!');
+  }
+
+  save();
+  inp.value = '';
+  addQty = 1;
+  document.getElementById('add-qty').textContent = 1;
+  showView('lista');
+}
+
+// ---- RENDER LISTA ----
+function renderLista() {
+  const cont = document.getElementById('lista-content');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty"><div class="emoji">🛒</div><p>Lista on tyhjä.<br>Lisää tuotteita Lisää-välilehdeltä!</p></div>';
+    return;
+  }
+
+  const unchecked = lista.filter(i => !i.checked);
+  const checked = lista.filter(i => i.checked);
+
+  let html = '';
+  if (unchecked.length) {
+    html += `<div class="clear-row">
+      <button class="btn-sm" onclick="clearChecked()">Poista kerätyt</button>
+      <button class="btn-sm danger" onclick="clearAll()">Tyhjennä kaikki</button>
+    </div>`;
+    html += '<div class="item-list">';
+    unchecked.forEach(item => {
+      html += itemCard(item);
+    });
+    html += '</div>';
+  }
+
+  if (checked.length) {
+    html += '<div class="divider"></div>';
+    html += '<p class="section-title">Kerätty ✓</p>';
+    html += '<div class="item-list checked-section">';
+    checked.forEach(item => {
+      html += itemCard(item);
+    });
+    html += '</div>';
+    if (!unchecked.length) {
+      html = `<div class="clear-row"><button class="btn-sm danger" onclick="clearAll()">Tyhjennä kaikki</button></div>` + html;
+    }
+  }
+
+  cont.innerHTML = html;
+}
+
+function itemCard(item) {
+  return `<div class="item-card${item.checked ? ' checked' : ''}" id="item-${item.id}">
+    <button class="check-btn${item.checked ? ' done' : ''}" onclick="toggleCheck(${item.id})">
+      ${item.checked ? '✓' : ''}
+    </button>
+    <span class="item-name">${escHtml(item.name)}</span>
+    ${item.qty > 1 ? `<span class="item-qty">${item.qty} kpl</span>` : ''}
+    <button class="item-del" onclick="deleteItem(${item.id})" title="Poista">✕</button>
+  </div>`;
+}
+
+function toggleCheck(id) {
+  const item = lista.find(i => i.id === id);
+  if (item) { item.checked = !item.checked; save(); renderLista(); }
+}
+
+function deleteItem(id) {
+  lista = lista.filter(i => i.id !== id);
+  save();
+  renderLista();
+}
+
+function clearChecked() {
+  lista = lista.filter(i => !i.checked);
+  save(); renderLista();
+}
+
+function clearAll() {
+  if (!confirm('Tyhjennetäänkö koko lista?')) return;
+  lista = [];
+  save(); renderLista();
+}
+
+// ---- RENDER SUOSIKIT ----
+function renderSuosikit() {
+  const cont = document.getElementById('fav-list');
+  const badge = document.getElementById('fav-count-badge');
+  badge.innerHTML = suosikit.length ? `<span class="badge">${suosikit.length}</span>` : '';
+
+  if (!suosikit.length) {
+    cont.innerHTML = '<div class="empty"><div class="emoji">⭐</div><p>Ei suosikkeja vielä.<br>Lisää tuotteita suosikkeihin tallennuksen yhteydessä!</p></div>';
+    return;
+  }
+
+  let html = '<div class="item-list">';
+  suosikit.forEach(fav => {
+    if (!favQtys[fav.id]) favQtys[fav.id] = 1;
+    html += `<div class="fav-item">
+      <span class="fav-name">⭐ ${escHtml(fav.name)}</span>
+      <div class="fav-add-row">
+        <div class="fav-qty-wrap">
+          <button class="fav-qty-btn" onclick="muutaQty(-1,${fav.id})">−</button>
+          <span class="fav-qty-num" id="fq-${fav.id}">${favQtys[fav.id] || 1}</span>
+          <button class="fav-qty-btn" onclick="muutaQty(1,${fav.id})">+</button>
+        </div>
+        <button class="fav-add-btn" onclick="addFavToList(${fav.id})">+ Lista</button>
+        <button class="fav-del-btn" onclick="deleteFav(${fav.id})" title="Poista suosikki">✕</button>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  cont.innerHTML = html;
+}
+
+function addFavToList(favId) {
+  const fav = suosikit.find(f => f.id === favId);
+  if (!fav) return;
+  const qty = favQtys[favId] || 1;
+  const existing = lista.find(i => i.name.toLowerCase() === fav.name.toLowerCase() && !i.checked);
+  if (existing) {
+    existing.qty += qty;
+    toast(`+${qty} lisätty: ${fav.name}`);
+  } else {
+    lista.push({ id: Date.now(), name: fav.name, qty, checked: false });
+    lista.sort((a,b) => a.name.localeCompare(b.name, 'fi'));
+    toast(`✅ ${fav.name} lisätty listalle!`);
+  }
+  favQtys[favId] = 1;
+  save();
+  renderSuosikit();
+}
+
+function deleteFav(favId) {
+  suosikit = suosikit.filter(f => f.id !== favId);
+  save(); renderSuosikit();
+}
+
+// ---- QUICK FAVS in ADD view ----
+function renderQuickFavs() {
+  const cont = document.getElementById('quick-favs');
+  if (!suosikit.length) {
+    cont.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);padding:8px 0;">Ei vielä suosikkeja.</p>';
+    return;
+  }
+  let html = '<div class="item-list">';
+  suosikit.forEach(fav => {
+    html += `<div class="fav-item">
+      <span class="fav-name">⭐ ${escHtml(fav.name)}</span>
+      <button class="fav-add-btn" onclick="quickAdd(${fav.id})">+ Lisää</button>
+    </div>`;
+  });
+  html += '</div>';
+  cont.innerHTML = html;
+}
+
+function quickAdd(favId) {
+  const fav = suosikit.find(f => f.id === favId);
+  if (!fav) return;
+  const existing = lista.find(i => i.name.toLowerCase() === fav.name.toLowerCase() && !i.checked);
+  if (existing) { existing.qty += 1; }
+  else { lista.push({ id: Date.now(), name: fav.name, qty: 1, checked: false }); lista.sort((a,b) => a.name.localeCompare(b.name,'fi')); }
+  save();
+  toast(`✅ ${fav.name} lisätty!`);
+}
+
+// ---- SHEETS ----
+async function haeSheets() {
+  const url = document.getElementById('sheets-url').value.trim();
+  if (!url) { toast('Anna Sheets CSV-linkki!'); return; }
+  sheetsUrl = url;
+  localStorage.setItem('sheetsUrl', url);
+
+  const status = document.getElementById('sheets-status');
+  status.textContent = '⏳ Haetaan listaa…';
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('Verkkovirhe');
+    const text = await resp.text();
+    const rows = text.trim().split('\n').slice(1); // skip header
+    let added = 0, favAdded = 0;
+
+    rows.forEach(row => {
+      const cols = parseCSVRow(row);
+      if (!cols[0]) return;
+      const name = cols[0].trim();
+      const qty = parseInt(cols[1]) || 1;
+      const isFav = (cols[2] || '').trim().toLowerCase() === 'kyllä';
+
+      if (!lista.find(i => i.name.toLowerCase() === name.toLowerCase())) {
+        lista.push({ id: Date.now() + Math.random(), name, qty, checked: false });
+        added++;
+      }
+      if (isFav && !suosikit.find(s => s.name.toLowerCase() === name.toLowerCase())) {
+        suosikit.push({ id: Date.now() + Math.random() + 1, name });
+        favAdded++;
+      }
+    });
+
+    lista.sort((a,b) => a.name.localeCompare(b.name,'fi'));
+    suosikit.sort((a,b) => a.name.localeCompare(b.name,'fi'));
+    save();
+    status.textContent = `✅ Lisätty ${added} tuotetta, ${favAdded} uutta suosikkia!`;
+    toast(`Haettu! ${added} tuotetta lisätty.`);
+    setTimeout(() => showView('lista'), 1200);
+  } catch(e) {
+    status.textContent = '❌ Haku epäonnistui. Tarkista linkki ja taulukon jako-asetukset.';
+  }
+}
+
+function avaaSheetsPohja() {
+  window.open('https://sheets.new', '_blank');
+  toast('📋 Sheets avautui! Lisää sarakkeet: Tuote | Kpl | Suosikki');
+}
+
+function parseCSVRow(row) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < row.length; i++) {
+    if (row[i] === '"') { inQ = !inQ; }
+    else if (row[i] === ',' && !inQ) { result.push(cur); cur = ''; }
+    else cur += row[i];
+  }
+  result.push(cur);
+  return result;
+}
+
+// ---- TOAST ----
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Init
+renderLista();
+</script>
+</body>
+</html>
