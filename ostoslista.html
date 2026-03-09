@@ -508,8 +508,7 @@
     <div class="input-row">
       <input class="text-input" id="tuote-input" type="text" placeholder="Tuotteen nimi…" autocomplete="off"
         onkeydown="if(event.key==='Enter') tallenna(false)"
-        oninput="suodataFavs(this.value)"
-        onfocus="scrollaaFavs()">
+        oninput="suodataFavs(this.value)">
       <div class="qty-wrap">
         <button class="qty-btn" onclick="muutaQty(-1, 'add-qty')">−</button>
         <span class="qty-display" id="add-qty">1</span>
@@ -808,27 +807,6 @@ function renderQuickFavs(hakusana) {
 
 function suodataFavs(arvo) {
   renderQuickFavs(arvo);
-  scrollaaFavs();
-}
-
-function scrollaaFavs() {
-  setTimeout(() => {
-    const favs = document.getElementById('quick-favs');
-    if (favs) favs.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 350);
-}
-
-// Kun näppäimistö aukeaa mobiilissa, scrollaa suosikkilista näkyviin
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', () => {
-    const inp = document.getElementById('tuote-input');
-    if (document.activeElement === inp) {
-      setTimeout(() => {
-        const favs = document.getElementById('quick-favs');
-        if (favs) favs.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  });
 }
 
 function quickAdd(favId) {
