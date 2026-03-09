@@ -507,7 +507,8 @@
   <div class="add-form">
     <div class="input-row">
       <input class="text-input" id="tuote-input" type="text" placeholder="Tuotteen nimi…" autocomplete="off"
-        onkeydown="if(event.key==='Enter') tallenna(false)">
+        onkeydown="if(event.key==='Enter') tallenna(false)"
+        oninput="suodataFavs(this.value)">
       <div class="qty-wrap">
         <button class="qty-btn" onclick="muutaQty(-1, 'add-qty')">−</button>
         <span class="qty-display" id="add-qty">1</span>
@@ -766,21 +767,46 @@ function deleteFav(favId) {
 }
 
 // ---- QUICK FAVS in ADD view ----
-function renderQuickFavs() {
+function renderQuickFavs(hakusana) {
   const cont = document.getElementById('quick-favs');
   if (!suosikit.length) {
     cont.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);padding:8px 0;">Ei vielä suosikkeja.</p>';
     return;
   }
+
+  const haku = (hakusana || '').toLowerCase().trim();
+  const suodatettu = haku
+    ? suosikit.filter(f => f.name.toLowerCase().includes(haku))
+    : suosikit;
+
+  if (!suodatettu.length) {
+    cont.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);padding:8px 0;">Ei osumia suosikeista.</p>';
+    return;
+  }
+
   let html = '<div class="item-list">';
-  suosikit.forEach(fav => {
+  suodatettu.forEach(fav => {
+    // Highlight matching part
+    let nimi = escHtml(fav.name);
+    if (haku) {
+      const idx = fav.name.toLowerCase().indexOf(haku);
+      if (idx !== -1) {
+        nimi = escHtml(fav.name.substring(0, idx))
+          + `<mark style="background:#b8f5d0;border-radius:3px;padding:0 2px;">${escHtml(fav.name.substring(idx, idx + haku.length))}</mark>`
+          + escHtml(fav.name.substring(idx + haku.length));
+      }
+    }
     html += `<div class="fav-item">
-      <span class="fav-name">⭐ ${escHtml(fav.name)}</span>
+      <span class="fav-name">⭐ ${nimi}</span>
       <button class="fav-add-btn" onclick="quickAdd(${fav.id})">+ Lisää</button>
     </div>`;
   });
   html += '</div>';
   cont.innerHTML = html;
+}
+
+function suodataFavs(arvo) {
+  renderQuickFavs(arvo);
 }
 
 function quickAdd(favId) {
