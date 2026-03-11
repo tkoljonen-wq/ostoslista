@@ -139,13 +139,14 @@
     border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     overflow: hidden;
+    height: 50px;
   }
   .qty-btn {
-    width: 36px;
+    width: 44px;
     height: 100%;
     border: none;
     background: transparent;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: var(--primary);
     cursor: pointer;
@@ -156,10 +157,10 @@
   }
   .qty-btn:active { background: var(--surface2); }
   .qty-display {
-    width: 32px;
+    width: 36px;
     text-align: center;
     font-weight: 800;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     color: var(--text);
   }
 
@@ -408,12 +409,12 @@
   .info-box strong { color: var(--primary-dark); }
 
   .mic-btn {
-    width: 46px;
-    height: 46px;
+    width: 52px;
+    height: auto;
     border-radius: var(--radius-sm);
     border: 2px solid var(--border);
     background: var(--bg);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -422,6 +423,7 @@
     transition: all 0.15s;
     user-select: none;
     -webkit-user-select: none;
+    padding: 12px 0;
   }
   .mic-btn.kuuntelee {
     background: #fee;
@@ -541,11 +543,6 @@
       <input class="text-input" id="tuote-input" type="text" placeholder="Tuotteen nimi…" autocomplete="off"
         onkeydown="if(event.key==='Enter') tallenna(false)"
         oninput="suodataFavs(this.value)">
-      <button class="mic-btn" id="mic-btn"
-        onmousedown="aloitaKuuntelu()" onmouseup="lopetaKuuntelu()"
-        ontouchstart="aloitaKuuntelu(event)" ontouchend="lopetaKuuntelu()">
-        🎤
-      </button>
       <div class="qty-wrap">
         <button class="qty-btn" onclick="muutaQty(-1, 'add-qty')">−</button>
         <span class="qty-display" id="add-qty">1</span>
@@ -554,6 +551,11 @@
     </div>
     <div id="mic-status"></div>
     <div class="action-row">
+      <button class="mic-btn" id="mic-btn"
+        onmousedown="aloitaKuuntelu()" onmouseup="lopetaKuuntelu()"
+        ontouchstart="aloitaKuuntelu(event)" ontouchend="lopetaKuuntelu()">
+        🎤
+      </button>
       <button class="btn btn-primary" onclick="tallenna(false)">💾 Tallenna</button>
       <button class="btn btn-fav" onclick="tallenna(true)">⭐ + Suosikkeihin</button>
     </div>
