@@ -3,7 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2d9e5f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Ostoslista">
 <title>Ostoslista</title>
+
+<!-- SVG favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%232d9e5f'/%3E%3Crect x='2' y='2' width='508' height='508' rx='94' fill='none' stroke='%231e7a47' stroke-width='4'/%3E%3Crect x='120' y='80' width='272' height='352' rx='20' fill='white' opacity='0.95'/%3E%3Crect x='120' y='80' width='272' height='60' rx='20' fill='%231e7a47'/%3E%3Crect x='120' y='120' width='272' height='20' fill='%231e7a47'/%3E%3Ccircle cx='170' cy='200' r='14' fill='none' stroke='%232d9e5f' stroke-width='5'/%3E%3Crect x='200' y='192' width='150' height='8' rx='4' fill='%231a2e22' opacity='0.7'/%3E%3Crect x='200' y='208' width='90' height='6' rx='3' fill='%236b8f78' opacity='0.4'/%3E%3Ccircle cx='170' cy='260' r='14' fill='%232d9e5f'/%3E%3Cpath d='M163 260l5 5 10-10' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='200' y='252' width='130' height='8' rx='4' fill='%236b8f78' opacity='0.4'/%3E%3Ccircle cx='170' cy='320' r='14' fill='none' stroke='%232d9e5f' stroke-width='5'/%3E%3Crect x='200' y='312' width='170' height='8' rx='4' fill='%231a2e22' opacity='0.7'/%3E%3Crect x='200' y='328' width='100' height='6' rx='3' fill='%236b8f78' opacity='0.4'/%3E%3Ccircle cx='170' cy='380' r='14' fill='%232d9e5f'/%3E%3Cpath d='M163 380l5 5 10-10' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='200' y='372' width='110' height='8' rx='4' fill='%236b8f78' opacity='0.4'/%3E%3C/svg%3E" />
+
+<link rel="apple-touch-icon" id="appleTouchIcon" />
+
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,7 +47,6 @@
     padding-bottom: 80px;
   }
 
-  /* HEADER */
   .header {
     background: var(--primary);
     padding: 8px 10px;
@@ -74,12 +83,10 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   }
 
-  /* CONTENT VIEWS */
   .view { display: none; padding: 12px 16px; }
   .view.active { display: block; }
   #view-lisaa.active { padding: 10px 16px; }
 
-  /* SECTION HEADERS */
   .section-title {
     font-size: 0.75rem;
     font-weight: 800;
@@ -89,7 +96,6 @@
     margin: 16px 0 8px;
   }
 
-  /* ADD ITEM FORM */
   .add-form {
     background: var(--surface);
     border-radius: var(--radius);
@@ -194,7 +200,6 @@
   }
   .btn-sheets:active { background: var(--surface2); }
 
-  /* SHOPPING LIST ITEMS */
   .item-list { display: flex; flex-direction: column; gap: 8px; }
 
   .item-card {
@@ -275,7 +280,6 @@
   }
   .item-del:active { background: #fee; color: var(--accent2); }
 
-  /* EMPTY STATE */
   .empty {
     text-align: center;
     padding: 40px 20px;
@@ -284,7 +288,6 @@
   .empty .emoji { font-size: 3rem; margin-bottom: 10px; }
   .empty p { font-weight: 600; font-size: 0.95rem; }
 
-  /* CLEAR BTN */
   .clear-row {
     display: flex;
     justify-content: flex-end;
@@ -306,7 +309,6 @@
   .btn-sm:active { background: var(--border); }
   .btn-sm.danger { background: #fdeaea; color: var(--accent2); }
 
-  /* FAVORITES VIEW */
   .fav-item {
     background: var(--surface);
     border-radius: var(--radius-sm);
@@ -349,7 +351,6 @@
   }
   .fav-del-btn:active { background: #fee; color: var(--accent2); }
 
-  /* SHEETS VIEW */
   .sheets-card {
     background: var(--surface);
     border-radius: var(--radius);
@@ -451,7 +452,6 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* BADGE */
   .badge {
     background: var(--accent);
     color: white;
@@ -471,7 +471,6 @@
 
   .checked-section { opacity: 0.8; }
 
-  /* Qty in fav add popup */
   .fav-add-row {
     display: flex;
     align-items: center;
@@ -514,12 +513,10 @@
   </div>
 </div>
 
-<!-- LISTA VIEW -->
 <div class="view active" id="view-lista">
   <div id="lista-content"></div>
 </div>
 
-<!-- LISÄÄ VIEW -->
 <div class="view" id="view-lisaa">
   <div class="add-form">
     <div class="input-row">
@@ -548,15 +545,12 @@
   <div id="quick-favs"></div>
 </div>
 
-<!-- SUOSIKIT VIEW -->
 <div class="view" id="view-suosikit">
   <p class="section-title">Suosikit <span id="fav-count-badge"></span></p>
   <div id="fav-list"></div>
 </div>
 
-<!-- SHEETS VIEW -->
 <div class="view" id="view-sheets">
-
   <div class="sheets-card">
     <h3>📊 Hae lista Google Sheetsistä</h3>
     <p>Syötä taulukon CSV-linkki ja hae tuotteet suoraan ostoslistalle.</p>
@@ -590,13 +584,11 @@
       <strong>Vaihe 6:</strong> Liitä CSV-linkki ylläolevaan kenttään ja paina "Hae lista" 🎉
     </div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- STATE ----
 let lista = JSON.parse(localStorage.getItem('ostoslista') || '[]');
 let suosikit = JSON.parse(localStorage.getItem('suosikit') || '[]');
 let sheetsUrl = localStorage.getItem('sheetsUrl') || '';
@@ -608,7 +600,6 @@ function save() {
   localStorage.setItem('suosikit', JSON.stringify(suosikit));
 }
 
-// ---- VIEWS ----
 function showView(v) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -624,19 +615,16 @@ function showView(v) {
   }
 }
 
-// ---- QTY ----
 function muutaQty(d, id) {
   if (id === 'add-qty') {
     addQty = Math.max(1, addQty + d);
     document.getElementById('add-qty').textContent = addQty;
   } else {
-    // fav qty
     favQtys[id] = Math.max(1, (favQtys[id] || 1) + d);
     document.getElementById('fq-' + id).textContent = favQtys[id];
   }
 }
 
-// ---- TALLENNA ----
 function tallenna(addToFav) {
   const inp = document.getElementById('tuote-input');
   const name = inp.value.trim();
@@ -662,7 +650,6 @@ function tallenna(addToFav) {
   renderQuickFavs();
 }
 
-// ---- RENDER LISTA ----
 function renderLista() {
   const cont = document.getElementById('lista-content');
   if (!lista.length) {
@@ -680,9 +667,7 @@ function renderLista() {
       <button class="btn-sm danger" onclick="clearAll()">Tyhjennä kaikki</button>
     </div>`;
     html += '<div class="item-list">';
-    unchecked.forEach(item => {
-      html += itemCard(item);
-    });
+    unchecked.forEach(item => { html += itemCard(item); });
     html += '</div>';
   }
 
@@ -690,9 +675,7 @@ function renderLista() {
     html += '<div class="divider"></div>';
     html += '<p class="section-title">Kerätty ✓</p>';
     html += '<div class="item-list checked-section">';
-    checked.forEach(item => {
-      html += itemCard(item);
-    });
+    checked.forEach(item => { html += itemCard(item); });
     html += '</div>';
     if (!unchecked.length) {
       html = `<div class="clear-row"><button class="btn-sm danger" onclick="clearAll()">Tyhjennä kaikki</button></div>` + html;
@@ -720,8 +703,7 @@ function toggleCheck(id) {
 
 function deleteItem(id) {
   lista = lista.filter(i => i.id !== id);
-  save();
-  renderLista();
+  save(); renderLista();
 }
 
 function clearChecked() {
@@ -735,7 +717,6 @@ function clearAll() {
   save(); renderLista();
 }
 
-// ---- RENDER SUOSIKIT ----
 function renderSuosikit() {
   const cont = document.getElementById('fav-list');
   const badge = document.getElementById('fav-count-badge');
@@ -789,7 +770,6 @@ function deleteFav(favId) {
   save(); renderSuosikit();
 }
 
-// ---- QUICK FAVS in ADD view ----
 function renderQuickFavs(hakusana) {
   const cont = document.getElementById('quick-favs');
   if (!suosikit.length) {
@@ -798,9 +778,7 @@ function renderQuickFavs(hakusana) {
   }
 
   const haku = (hakusana || '').toLowerCase().trim();
-  const suodatettu = haku
-    ? suosikit.filter(f => f.name.toLowerCase().includes(haku))
-    : suosikit;
+  const suodatettu = haku ? suosikit.filter(f => f.name.toLowerCase().includes(haku)) : suosikit;
 
   if (!suodatettu.length) {
     cont.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);padding:8px 0;">Ei osumia suosikeista.</p>';
@@ -809,7 +787,6 @@ function renderQuickFavs(hakusana) {
 
   let html = '<div class="item-list">';
   suodatettu.forEach(fav => {
-    // Highlight matching part
     let nimi = escHtml(fav.name);
     if (haku) {
       const idx = fav.name.toLowerCase().indexOf(haku);
@@ -828,9 +805,7 @@ function renderQuickFavs(hakusana) {
   cont.innerHTML = html;
 }
 
-function suodataFavs(arvo) {
-  renderQuickFavs(arvo);
-}
+function suodataFavs(arvo) { renderQuickFavs(arvo); }
 
 function quickAdd(favId) {
   const fav = suosikit.find(f => f.id === favId);
@@ -842,7 +817,6 @@ function quickAdd(favId) {
   toast(`✅ ${fav.name} lisätty!`);
 }
 
-// ---- SHEETS ----
 async function haeSheets() {
   const url = document.getElementById('sheets-url').value.trim();
   if (!url) { toast('Anna Sheets CSV-linkki!'); return; }
@@ -856,7 +830,7 @@ async function haeSheets() {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('Verkkovirhe');
     const text = await resp.text();
-    const rows = text.trim().split('\n').slice(1); // skip header
+    const rows = text.trim().split('\n').slice(1);
     let added = 0, favAdded = 0;
 
     rows.forEach(row => {
@@ -904,7 +878,6 @@ function parseCSVRow(row) {
   return result;
 }
 
-// ---- PUHEENTUNNISTUS ----
 let tunnistus = null;
 let kuuntelee = false;
 
@@ -913,10 +886,7 @@ function aloitaKuuntelu(e) {
   if (kuuntelee) return;
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    toast('❌ Selain ei tue puheentunnistusta');
-    return;
-  }
+  if (!SpeechRecognition) { toast('❌ Selain ei tue puheentunnistusta'); return; }
 
   tunnistus = new SpeechRecognition();
   tunnistus.lang = 'fi-FI';
@@ -930,9 +900,7 @@ function aloitaKuuntelu(e) {
   };
 
   tunnistus.onresult = (e) => {
-    const teksti = Array.from(e.results)
-      .map(r => r[0].transcript)
-      .join('');
+    const teksti = Array.from(e.results).map(r => r[0].transcript).join('');
     const inp = document.getElementById('tuote-input');
     inp.value = teksti;
     suodataFavs(teksti);
@@ -943,17 +911,13 @@ function aloitaKuuntelu(e) {
     lopetaUI();
   };
 
-  tunnistus.onend = () => {
-    lopetaUI();
-  };
+  tunnistus.onend = () => { lopetaUI(); };
 
   tunnistus.start();
 }
 
 function lopetaKuuntelu() {
-  if (tunnistus && kuuntelee) {
-    tunnistus.stop();
-  }
+  if (tunnistus && kuuntelee) { tunnistus.stop(); }
   lopetaUI();
 }
 
@@ -967,7 +931,6 @@ function lopetaUI() {
   }, 1500);
 }
 
-
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -979,8 +942,149 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// Init
 renderLista();
+</script>
+
+<!-- Web App Manifest & ikoni-generointi -->
+<script>
+(function() {
+  function generateIcon(size) {
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const ctx = c.getContext('2d');
+    const s = size / 512;
+
+    // Vihreä pyöristetty tausta
+    const r = 96 * s;
+    ctx.fillStyle = '#2d9e5f';
+    ctx.beginPath();
+    ctx.moveTo(r, 0);
+    ctx.lineTo(size - r, 0); ctx.quadraticCurveTo(size, 0, size, r);
+    ctx.lineTo(size, size - r); ctx.quadraticCurveTo(size, size, size - r, size);
+    ctx.lineTo(r, size); ctx.quadraticCurveTo(0, size, 0, size - r);
+    ctx.lineTo(0, r); ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    // Hieno tummempi reuna
+    ctx.strokeStyle = '#1e7a47';
+    ctx.lineWidth = 4 * s;
+    ctx.stroke();
+
+    // Valkoinen "paperi"-kortti
+    const cardX = 120 * s, cardY = 70 * s;
+    const cardW = 272 * s, cardH = 370 * s;
+    const cardR = 20 * s;
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.beginPath();
+    ctx.moveTo(cardX + cardR, cardY);
+    ctx.lineTo(cardX + cardW - cardR, cardY); ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + cardR);
+    ctx.lineTo(cardX + cardW, cardY + cardH - cardR); ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - cardR, cardY + cardH);
+    ctx.lineTo(cardX + cardR, cardY + cardH); ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - cardR);
+    ctx.lineTo(cardX, cardY + cardR); ctx.quadraticCurveTo(cardX, cardY, cardX + cardR, cardY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Vihreä yläpalkki
+    ctx.fillStyle = '#1e7a47';
+    ctx.beginPath();
+    ctx.moveTo(cardX + cardR, cardY);
+    ctx.lineTo(cardX + cardW - cardR, cardY); ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + cardR);
+    ctx.lineTo(cardX + cardW, cardY + 60 * s);
+    ctx.lineTo(cardX, cardY + 60 * s);
+    ctx.lineTo(cardX, cardY + cardR); ctx.quadraticCurveTo(cardX, cardY, cardX + cardR, cardY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Otsikkoteksti yläpalkissa
+    ctx.fillStyle = 'white';
+    ctx.font = `bold ${18 * s}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('OSTOSLISTA', 256 * s, cardY + 30 * s);
+
+    // Neljä tehtäväriviä
+    const rows = [
+      { y: 175, checked: false },
+      { y: 245, checked: true },
+      { y: 315, checked: false },
+      { y: 385, checked: true },
+    ];
+
+    rows.forEach(row => {
+      const cy = row.y * s;
+      const cx = 170 * s;
+      const cr = 14 * s;
+
+      // Ympyrä
+      ctx.beginPath();
+      ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+      if (row.checked) {
+        ctx.fillStyle = '#2d9e5f';
+        ctx.fill();
+        // Checkmark
+        ctx.beginPath();
+        ctx.moveTo((cx - 6 * s), cy);
+        ctx.lineTo((cx - 1 * s), cy + 6 * s);
+        ctx.lineTo((cx + 8 * s), cy - 5 * s);
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 4 * s;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      } else {
+        ctx.strokeStyle = '#2d9e5f';
+        ctx.lineWidth = 4 * s;
+        ctx.stroke();
+      }
+
+      // Tekstirivi
+      const textX = 200 * s;
+      ctx.fillStyle = row.checked ? 'rgba(107,143,120,0.4)' : 'rgba(26,46,34,0.7)';
+      const barW = (120 + Math.random() * 80) * s;
+      ctx.beginPath();
+      ctx.roundRect(textX, cy - 5 * s, barW, 8 * s, 4 * s);
+      ctx.fill();
+
+      // Alarivi
+      if (!row.checked) {
+        ctx.fillStyle = 'rgba(107,143,120,0.3)';
+        ctx.beginPath();
+        ctx.roundRect(textX, cy + 10 * s, barW * 0.6, 5 * s, 3 * s);
+        ctx.fill();
+      }
+    });
+
+    return c.toDataURL('image/png');
+  }
+
+  const icon192 = generateIcon(192);
+  const icon512 = generateIcon(512);
+
+  const appleLink = document.getElementById('appleTouchIcon');
+  if (appleLink) appleLink.href = icon192;
+
+  const manifest = {
+    id: './',
+    name: 'Ostoslista',
+    short_name: 'Ostoslista',
+    description: 'Ostoslista',
+    start_url: './',
+    display: 'standalone',
+    background_color: '#f0faf4',
+    theme_color: '#2d9e5f',
+    icons: [
+      { src: icon192, sizes: '192x192', type: 'image/png' },
+      { src: icon512, sizes: '512x512', type: 'image/png' }
+    ]
+  };
+
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+})();
 </script>
 </body>
 </html>
