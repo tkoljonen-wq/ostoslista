@@ -45,6 +45,8 @@
     max-width: 480px;
     margin: 0 auto;
     padding-bottom: 80px;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .header {
@@ -210,9 +212,11 @@
     align-items: center;
     gap: 12px;
     box-shadow: var(--shadow);
-    transition: all 0.25s;
+    transition: background 0.25s, opacity 0.25s, border-left-color 0.25s, box-shadow 0.2s;
     border-left: 4px solid transparent;
     animation: slideIn 0.25s ease;
+    position: relative;
+    touch-action: manipulation;
   }
   @keyframes slideIn {
     from { opacity: 0; transform: translateY(-8px); }
@@ -222,6 +226,60 @@
     background: #f4fdf7;
     border-left-color: var(--checked);
     opacity: 0.7;
+  }
+
+  /* Drag handle */
+  .drag-handle {
+    width: 22px;
+    height: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex-shrink: 0;
+    cursor: grab;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+    padding: 2px;
+  }
+  .drag-handle:active { cursor: grabbing; }
+  .item-card:hover .drag-handle,
+  .item-card:active .drag-handle { opacity: 0.6; }
+  .drag-handle-dot {
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--text-muted);
+  }
+
+  /* Dragging states */
+  .item-card.drag-ready {
+    box-shadow: var(--shadow-lg);
+    border-left-color: var(--primary);
+    background: #eafff2;
+  }
+  .item-card.dragging {
+    position: fixed;
+    z-index: 1000;
+    box-shadow: 0 12px 40px rgba(45,158,95,0.25);
+    border-left-color: var(--primary);
+    background: #eafff2;
+    pointer-events: none;
+    width: calc(100% - 32px);
+    max-width: 448px;
+    transform: scale(1.03);
+    opacity: 0.95;
+  }
+  .item-card.drag-placeholder {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .item-card.drag-over-above {
+    box-shadow: 0 -3px 0 0 var(--primary), var(--shadow);
+  }
+  .item-card.drag-over-below {
+    box-shadow: 0 3px 0 0 var(--primary), var(--shadow);
   }
 
   .check-btn {
@@ -249,7 +307,10 @@
     font-weight: 700;
     font-size: 0.97rem;
     transition: all 0.2s;
+    cursor: pointer;
+    min-width: 0;
   }
+  .item-name:hover { color: var(--primary-dark); }
   .item-card.checked .item-name {
     text-decoration: line-through;
     color: var(--text-muted);
@@ -262,7 +323,10 @@
     padding: 3px 9px;
     border-radius: 20px;
     flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s;
   }
+  .item-qty:hover { background: var(--border); color: var(--primary-dark); }
   .item-del {
     width: 28px;
     height: 28px;
@@ -279,6 +343,82 @@
     flex-shrink: 0;
   }
   .item-del:active { background: #fee; color: var(--accent2); }
+
+  /* Inline edit mode */
+  .edit-name-input {
+    flex: 1;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    min-width: 0;
+  }
+  .edit-qty-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--surface2);
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .edit-qty-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .edit-qty-btn:active { background: var(--border); }
+  .edit-qty-num {
+    width: 28px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+  .edit-save-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .edit-save-btn:active { background: var(--primary-dark); transform: scale(0.93); }
+  .edit-cancel-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: var(--surface2);
+    color: var(--text-muted);
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .edit-cancel-btn:active { background: var(--border); }
 
   .empty {
     text-align: center;
@@ -500,6 +640,14 @@
     font-weight: 800;
     font-size: 0.88rem;
   }
+
+  .drag-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin: 8px 0 4px;
+    opacity: 0.7;
+  }
 </style>
 </head>
 <body>
@@ -594,6 +742,8 @@ let suosikit = JSON.parse(localStorage.getItem('suosikit') || '[]');
 let sheetsUrl = localStorage.getItem('sheetsUrl') || '';
 let addQty = 1;
 let favQtys = {};
+let editingId = null;
+let editQty = 1;
 
 function save() {
   localStorage.setItem('ostoslista', JSON.stringify(lista));
@@ -601,6 +751,7 @@ function save() {
 }
 
 function showView(v) {
+  editingId = null;
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
@@ -619,6 +770,10 @@ function muutaQty(d, id) {
   if (id === 'add-qty') {
     addQty = Math.max(1, addQty + d);
     document.getElementById('add-qty').textContent = addQty;
+  } else if (id === 'edit-qty') {
+    editQty = Math.max(1, editQty + d);
+    const el = document.getElementById('edit-qty-display');
+    if (el) el.textContent = editQty;
   } else {
     favQtys[id] = Math.max(1, (favQtys[id] || 1) + d);
     document.getElementById('fq-' + id).textContent = favQtys[id];
@@ -632,7 +787,6 @@ function tallenna(addToFav) {
 
   const item = { id: Date.now(), name, qty: addQty, checked: false };
   lista.push(item);
-  lista.sort((a,b) => a.name.localeCompare(b.name, 'fi'));
 
   if (addToFav && !suosikit.find(s => s.name.toLowerCase() === name.toLowerCase())) {
     suosikit.push({ id: Date.now() + 1, name });
@@ -650,6 +804,44 @@ function tallenna(addToFav) {
   renderQuickFavs();
 }
 
+/* ---- INLINE EDITING ---- */
+function startEdit(id) {
+  if (dragState.active) return;
+  const item = lista.find(i => i.id === id);
+  if (!item) return;
+  editingId = id;
+  editQty = item.qty;
+  renderLista();
+  const inp = document.getElementById('edit-name-input');
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+function saveEdit(id) {
+  const inp = document.getElementById('edit-name-input');
+  if (!inp) return;
+  const newName = inp.value.trim();
+  if (!newName) { toast('Anna tuotteen nimi!'); return; }
+  const item = lista.find(i => i.id === id);
+  if (item) {
+    item.name = newName;
+    item.qty = editQty;
+  }
+  editingId = null;
+  save();
+  renderLista();
+  toast('✏️ Muokattu!');
+}
+
+function cancelEdit() {
+  editingId = null;
+  renderLista();
+}
+
+function startEditQty(id) {
+  if (dragState.active) return;
+  startEdit(id);
+}
+
 function renderLista() {
   const cont = document.getElementById('lista-content');
   if (!lista.length) {
@@ -661,12 +853,17 @@ function renderLista() {
   const checked = lista.filter(i => i.checked);
 
   let html = '';
+  if (unchecked.length || checked.length) {
+    html += `<div class="clear-row">`;
+    if (checked.length) html += `<button class="btn-sm" onclick="clearChecked()">Poista kerätyt</button>`;
+    html += `<button class="btn-sm danger" onclick="clearAll()">Tyhjennä kaikki</button></div>`;
+  }
+
   if (unchecked.length) {
-    html += `<div class="clear-row">
-      <button class="btn-sm" onclick="clearChecked()">Poista kerätyt</button>
-      <button class="btn-sm danger" onclick="clearAll()">Tyhjennä kaikki</button>
-    </div>`;
-    html += '<div class="item-list">';
+    if (unchecked.length > 1) {
+      html += '<p class="drag-hint">↕ Pidä tuotteesta pitkään ja raahaa järjestääksesi</p>';
+    }
+    html += '<div class="item-list" id="unchecked-list">';
     unchecked.forEach(item => { html += itemCard(item); });
     html += '</div>';
   }
@@ -677,21 +874,39 @@ function renderLista() {
     html += '<div class="item-list checked-section">';
     checked.forEach(item => { html += itemCard(item); });
     html += '</div>';
-    if (!unchecked.length) {
-      html = `<div class="clear-row"><button class="btn-sm danger" onclick="clearAll()">Tyhjennä kaikki</button></div>` + html;
-    }
   }
 
   cont.innerHTML = html;
 }
 
 function itemCard(item) {
-  return `<div class="item-card${item.checked ? ' checked' : ''}" id="item-${item.id}">
+  const isEditing = editingId === item.id;
+
+  if (isEditing) {
+    return `<div class="item-card" id="item-${item.id}" style="gap:8px;">
+      <input class="edit-name-input" id="edit-name-input" type="text" value="${escHtml(item.name)}"
+        onkeydown="if(event.key==='Enter')saveEdit(${item.id});if(event.key==='Escape')cancelEdit();">
+      <div class="edit-qty-wrap">
+        <button class="edit-qty-btn" onclick="muutaQty(-1,'edit-qty')">−</button>
+        <span class="edit-qty-num" id="edit-qty-display">${editQty}</span>
+        <button class="edit-qty-btn" onclick="muutaQty(1,'edit-qty')">+</button>
+      </div>
+      <button class="edit-save-btn" onclick="saveEdit(${item.id})" title="Tallenna">✓</button>
+      <button class="edit-cancel-btn" onclick="cancelEdit()" title="Peruuta">✕</button>
+    </div>`;
+  }
+
+  return `<div class="item-card${item.checked ? ' checked' : ''}" id="item-${item.id}" data-id="${item.id}">
+    ${!item.checked ? `<div class="drag-handle" data-drag-handle="${item.id}">
+      <div class="drag-handle-dot"></div>
+      <div class="drag-handle-dot"></div>
+      <div class="drag-handle-dot"></div>
+    </div>` : ''}
     <button class="check-btn${item.checked ? ' done' : ''}" onclick="toggleCheck(${item.id})">
       ${item.checked ? '✓' : ''}
     </button>
-    <span class="item-name">${escHtml(item.name)}</span>
-    ${item.qty > 1 ? `<span class="item-qty">${item.qty} kpl</span>` : ''}
+    <span class="item-name" onclick="startEdit(${item.id})">${escHtml(item.name)}</span>
+    <span class="item-qty" onclick="startEditQty(${item.id})">${item.qty} kpl</span>
     <button class="item-del" onclick="deleteItem(${item.id})" title="Poista">✕</button>
   </div>`;
 }
@@ -717,6 +932,208 @@ function clearAll() {
   save(); renderLista();
 }
 
+/* ---- DRAG AND DROP (long press) ---- */
+const dragState = {
+  active: false,
+  itemId: null,
+  startY: 0,
+  currentY: 0,
+  longPressTimer: null,
+  dragEl: null,
+  placeholderEl: null,
+  cards: [],
+  listEl: null,
+  offsetY: 0,
+};
+
+const LONG_PRESS_MS = 400;
+
+function getDragCards() {
+  const listEl = document.getElementById('unchecked-list');
+  if (!listEl) return [];
+  return Array.from(listEl.querySelectorAll('.item-card:not(.dragging)'));
+}
+
+function handlePointerDown(e) {
+  // Only start from drag handle area
+  const handle = e.target.closest('[data-drag-handle]');
+  if (!handle) return;
+  if (editingId) return;
+
+  const card = handle.closest('.item-card');
+  if (!card || card.classList.contains('checked')) return;
+
+  const id = parseInt(card.dataset.id);
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const rect = card.getBoundingClientRect();
+
+  dragState.itemId = id;
+  dragState.startY = clientY;
+  dragState.offsetY = clientY - rect.top;
+
+  dragState.longPressTimer = setTimeout(() => {
+    startDrag(card, clientY);
+  }, LONG_PRESS_MS);
+}
+
+function startDrag(card, clientY) {
+  dragState.active = true;
+  const rect = card.getBoundingClientRect();
+  const listEl = document.getElementById('unchecked-list');
+  dragState.listEl = listEl;
+
+  // Create floating clone
+  const clone = card.cloneNode(true);
+  clone.classList.add('dragging');
+  clone.style.left = rect.left + 'px';
+  clone.style.top = rect.top + 'px';
+  clone.style.width = rect.width + 'px';
+  document.body.appendChild(clone);
+  dragState.dragEl = clone;
+
+  // Mark original as placeholder
+  card.classList.add('drag-placeholder');
+  dragState.placeholderEl = card;
+
+  // Vibrate on mobile
+  if (navigator.vibrate) navigator.vibrate(30);
+
+  card.classList.add('drag-ready');
+  setTimeout(() => card.classList.remove('drag-ready'), 200);
+}
+
+function handlePointerMove(e) {
+  if (dragState.longPressTimer && !dragState.active) {
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    if (Math.abs(clientY - dragState.startY) > 10) {
+      clearTimeout(dragState.longPressTimer);
+      dragState.longPressTimer = null;
+    }
+    return;
+  }
+
+  if (!dragState.active) return;
+  e.preventDefault();
+
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  dragState.currentY = clientY;
+
+  // Move floating element
+  if (dragState.dragEl) {
+    dragState.dragEl.style.top = (clientY - dragState.offsetY) + 'px';
+  }
+
+  // Find position among cards
+  const listEl = dragState.listEl;
+  if (!listEl) return;
+  const cards = Array.from(listEl.querySelectorAll('.item-card:not(.drag-placeholder)'));
+
+  // Clear all indicators
+  cards.forEach(c => {
+    c.classList.remove('drag-over-above', 'drag-over-below');
+  });
+
+  // Find the insert target
+  let insertBefore = null;
+  for (const c of cards) {
+    const r = c.getBoundingClientRect();
+    const mid = r.top + r.height / 2;
+    if (clientY < mid) {
+      insertBefore = c;
+      break;
+    }
+  }
+
+  if (insertBefore) {
+    insertBefore.classList.add('drag-over-above');
+  } else if (cards.length) {
+    cards[cards.length - 1].classList.add('drag-over-below');
+  }
+}
+
+function handlePointerUp(e) {
+  clearTimeout(dragState.longPressTimer);
+  dragState.longPressTimer = null;
+
+  if (!dragState.active) {
+    dragState.itemId = null;
+    return;
+  }
+
+  const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+  const listEl = dragState.listEl;
+
+  if (listEl) {
+    const cards = Array.from(listEl.querySelectorAll('.item-card:not(.drag-placeholder)'));
+
+    // Clear indicators
+    cards.forEach(c => c.classList.remove('drag-over-above', 'drag-over-below'));
+
+    // Find insert position among unchecked items
+    const unchecked = lista.filter(i => !i.checked);
+    const draggedItem = lista.find(i => i.id === dragState.itemId);
+
+    if (draggedItem) {
+      // Determine new index
+      let newIndex = unchecked.length - 1; // default: end
+
+      for (let ci = 0; ci < cards.length; ci++) {
+        const c = cards[ci];
+        const r = c.getBoundingClientRect();
+        const mid = r.top + r.height / 2;
+        if (clientY < mid) {
+          const targetId = parseInt(c.dataset.id);
+          newIndex = unchecked.findIndex(i => i.id === targetId);
+          break;
+        }
+      }
+
+      // Remove dragged item from lista
+      const oldGlobalIndex = lista.indexOf(draggedItem);
+      lista.splice(oldGlobalIndex, 1);
+
+      // Rebuild: unchecked in new order + checked at end
+      const remainingUnchecked = lista.filter(i => !i.checked);
+      const checkedItems = lista.filter(i => i.checked);
+
+      // Clamp
+      if (newIndex > remainingUnchecked.length) newIndex = remainingUnchecked.length;
+      if (newIndex < 0) newIndex = 0;
+
+      remainingUnchecked.splice(newIndex, 0, draggedItem);
+      lista = [...remainingUnchecked, ...checkedItems];
+      save();
+    }
+  }
+
+  // Cleanup
+  if (dragState.dragEl) {
+    dragState.dragEl.remove();
+  }
+  if (dragState.placeholderEl) {
+    dragState.placeholderEl.classList.remove('drag-placeholder');
+  }
+
+  dragState.active = false;
+  dragState.itemId = null;
+  dragState.dragEl = null;
+  dragState.placeholderEl = null;
+  dragState.listEl = null;
+
+  renderLista();
+}
+
+// Attach global listeners
+document.addEventListener('mousedown', handlePointerDown, { passive: true });
+document.addEventListener('mousemove', handlePointerMove, { passive: false });
+document.addEventListener('mouseup', handlePointerUp);
+
+document.addEventListener('touchstart', handlePointerDown, { passive: true });
+document.addEventListener('touchmove', handlePointerMove, { passive: false });
+document.addEventListener('touchend', handlePointerUp);
+document.addEventListener('touchcancel', handlePointerUp);
+
+/* ---- FAVORITES ---- */
 function renderSuosikit() {
   const cont = document.getElementById('fav-list');
   const badge = document.getElementById('fav-count-badge');
@@ -757,7 +1174,6 @@ function addFavToList(favId) {
     toast(`+${qty} lisätty: ${fav.name}`);
   } else {
     lista.push({ id: Date.now(), name: fav.name, qty, checked: false });
-    lista.sort((a,b) => a.name.localeCompare(b.name, 'fi'));
     toast(`✅ ${fav.name} lisätty listalle!`);
   }
   favQtys[favId] = 1;
@@ -812,11 +1228,12 @@ function quickAdd(favId) {
   if (!fav) return;
   const existing = lista.find(i => i.name.toLowerCase() === fav.name.toLowerCase() && !i.checked);
   if (existing) { existing.qty += 1; }
-  else { lista.push({ id: Date.now(), name: fav.name, qty: 1, checked: false }); lista.sort((a,b) => a.name.localeCompare(b.name,'fi')); }
+  else { lista.push({ id: Date.now(), name: fav.name, qty: 1, checked: false }); }
   save();
   toast(`✅ ${fav.name} lisätty!`);
 }
 
+/* ---- SHEETS ---- */
 async function haeSheets() {
   const url = document.getElementById('sheets-url').value.trim();
   if (!url) { toast('Anna Sheets CSV-linkki!'); return; }
@@ -850,7 +1267,6 @@ async function haeSheets() {
       }
     });
 
-    lista.sort((a,b) => a.name.localeCompare(b.name,'fi'));
     suosikit.sort((a,b) => a.name.localeCompare(b.name,'fi'));
     save();
     status.textContent = `✅ Lisätty ${added} tuotetta, ${favAdded} uutta suosikkia!`;
@@ -878,6 +1294,7 @@ function parseCSVRow(row) {
   return result;
 }
 
+/* ---- SPEECH ---- */
 let tunnistus = null;
 let kuuntelee = false;
 
@@ -939,7 +1356,7 @@ function toast(msg) {
 }
 
 function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 renderLista();
@@ -954,7 +1371,6 @@ renderLista();
     const ctx = c.getContext('2d');
     const s = size / 512;
 
-    // Vihreä pyöristetty tausta
     const r = 96 * s;
     ctx.fillStyle = '#2d9e5f';
     ctx.beginPath();
@@ -966,12 +1382,10 @@ renderLista();
     ctx.closePath();
     ctx.fill();
 
-    // Hieno tummempi reuna
     ctx.strokeStyle = '#1e7a47';
     ctx.lineWidth = 4 * s;
     ctx.stroke();
 
-    // Valkoinen "paperi"-kortti
     const cardX = 120 * s, cardY = 70 * s;
     const cardW = 272 * s, cardH = 370 * s;
     const cardR = 20 * s;
@@ -985,7 +1399,6 @@ renderLista();
     ctx.closePath();
     ctx.fill();
 
-    // Vihreä yläpalkki
     ctx.fillStyle = '#1e7a47';
     ctx.beginPath();
     ctx.moveTo(cardX + cardR, cardY);
@@ -996,14 +1409,12 @@ renderLista();
     ctx.closePath();
     ctx.fill();
 
-    // Otsikkoteksti yläpalkissa
     ctx.fillStyle = 'white';
     ctx.font = `bold ${18 * s}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('OSTOSLISTA', 256 * s, cardY + 30 * s);
 
-    // Neljä tehtäväriviä
     const rows = [
       { y: 175, checked: false },
       { y: 245, checked: true },
@@ -1016,13 +1427,11 @@ renderLista();
       const cx = 170 * s;
       const cr = 14 * s;
 
-      // Ympyrä
       ctx.beginPath();
       ctx.arc(cx, cy, cr, 0, Math.PI * 2);
       if (row.checked) {
         ctx.fillStyle = '#2d9e5f';
         ctx.fill();
-        // Checkmark
         ctx.beginPath();
         ctx.moveTo((cx - 6 * s), cy);
         ctx.lineTo((cx - 1 * s), cy + 6 * s);
@@ -1038,7 +1447,6 @@ renderLista();
         ctx.stroke();
       }
 
-      // Tekstirivi
       const textX = 200 * s;
       ctx.fillStyle = row.checked ? 'rgba(107,143,120,0.4)' : 'rgba(26,46,34,0.7)';
       const barW = (120 + Math.random() * 80) * s;
@@ -1046,7 +1454,6 @@ renderLista();
       ctx.roundRect(textX, cy - 5 * s, barW, 8 * s, 4 * s);
       ctx.fill();
 
-      // Alarivi
       if (!row.checked) {
         ctx.fillStyle = 'rgba(107,143,120,0.3)';
         ctx.beginPath();
