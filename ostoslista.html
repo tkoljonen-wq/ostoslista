@@ -905,11 +905,13 @@
     </div>
 
     <div class="scan-drop-zone" id="scan-drop-zone" onclick="document.getElementById('scan-file-input').click()">
-      <div class="drop-icon">📸</div>
-      <div class="drop-text">Napauta ottaaksesi kuvan tai valitse tiedosto</div>
+      <div class="drop-icon">🖼️</div>
+      <div class="drop-text">Valitse kuva galleriasta</div>
       <div class="drop-hint">JPG, PNG — käsinkirjoitettu tai painettu lista</div>
     </div>
-    <input type="file" id="scan-file-input" accept="image/*" capture="environment" style="display:none" onchange="handleScanFile(this)">
+    <input type="file" id="scan-file-input" accept="image/*" style="display:none" onchange="handleScanFile(this)">
+    <input type="file" id="scan-camera-input" accept="image/*" capture="environment" style="display:none" onchange="handleScanFile(this)">
+    <button class="btn btn-primary" onclick="document.getElementById('scan-camera-input').click()" style="margin-bottom:14px;width:100%;">📷 Ota kuva kameralla</button>
 
     <div class="scan-preview-area" id="scan-preview-area">
       <img class="scan-preview-img" id="scan-preview-img" alt="Esikatselu">
@@ -1599,6 +1601,7 @@ function resetScan() {
   document.getElementById('scan-progress').classList.remove('visible');
   document.getElementById('scan-results').classList.remove('visible');
   document.getElementById('scan-file-input').value = '';
+  document.getElementById('scan-camera-input').value = '';
 }
 
 async function tunnistaTuotteet() {
