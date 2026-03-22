@@ -2075,17 +2075,34 @@ async function tunnistaTuotteet() {
             },
             {
               type: 'text',
-              text: `Analysoi tämä kuva ostoslistasta. Tunnista kaikki tuotteet listasta. Kuva voi sisältää käsinkirjoitettua tai koneella kirjoitettua tekstiä.
+              text: `Tämä kuva on valokuva ostoslistasta. Tunnista kaikki tuotteet listasta. Kuva voi sisältää käsinkirjoitettua tai koneella kirjoitettua tekstiä.
+
+KONTEKSTI TUNNISTUKSEN TUEKSI:
+- Ostoslistat sisältävät useimmiten ruoka-aineita ja päivittäistavaroita (esim. maito, leipä, juusto, tomaatti, kananmuna, jogurtti, peruna, sipuli, kahvi, banaani, kana, jauheliha, riisi, pasta jne.)
+- Lista voi kuitenkin sisältää MITÄ TAHANSA tuotteita: kodinhoito, hygienia, lemmikkitarvikkeet, toimistotarvikkeet jne. — älä rajoitu pelkkiin elintarvikkeisiin
+- Käytä tätä kontekstia disambiguointiin: jos käsiala on epäselvä, valitse tulkinta joka on todennäköisin ostoslistan tuote. Esimerkiksi:
+  • "kuho" → todennäköisesti "kuha" (kala)
+  • "jnusto" → todennäköisesti "juusto"
+  • "ponani" → todennäköisesti "banaani"
+  • "tomatti" → todennäköisesti "tomaatti"
+  • "kaanapiirakka" tai epäselvä → "kanapiirakka"
+- Suomenkieliset elintarvikenimet: huomioi ä/ö-kirjaimet, yhdyssanat ja taivutusmuodot
+
+KÄSIALAN TULKINTA:
+- Älä tulkitse yksittäisiä merkkejä kirjaimellisesti, vaan päättele kokonainen sana kontekstin perusteella
+- Jos sana on lähes tunnistettavissa, korjaa se järkeväksi tuotteeksi
+- Jos et pysty tulkitsemaan sanaa lainkaan, jätä se pois mieluummin kuin arvaa väärin
+- Numerot ja merkinnät kuten "2x", "3 kpl", "x2" → käytä qty-arvona
 
 Vastaa AINOASTAAN JSON-muodossa ilman muuta tekstiä. Muoto:
 [{"name": "tuotteen nimi", "qty": 1}, ...]
 
 Säännöt:
-- Käytä suomenkielisiä nimiä jos mahdollista
+- Käytä suomenkielisiä nimiä, oikeinkirjoitettuna
 - Jos määrä näkyy, käytä sitä; muuten qty = 1
-- Tunnista myös epäselvä käsiala parhaasi mukaan
 - Jos kuvassa ei ole ostoslistaa, palauta tyhjä lista: []
-- Normalisoi tuotenimet (iso alkukirjain, ei ylimääräisiä välilyöntejä)
+- Normalisoi tuotenimet: iso alkukirjain, ei ylimääräisiä välilyöntejä
+- Yhdistä ilmeiset duplikaatit (sama tuote eri muodoissa)
 - ÄLÄ lisää mitään selitystä, pelkkä JSON-taulukko`
             }
           ]
