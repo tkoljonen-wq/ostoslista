@@ -60,7 +60,7 @@
 
   .tab-bar {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     background: rgba(0,0,0,0.15);
     border-radius: 12px;
     padding: 4px;
@@ -71,9 +71,9 @@
     background: transparent;
     color: rgba(255,255,255,0.7);
     font-family: 'Nunito', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    padding: 8px 6px;
+    padding: 8px 4px;
     border-radius: 9px;
     cursor: pointer;
     transition: all 0.2s;
@@ -228,7 +228,6 @@
     opacity: 0.7;
   }
 
-  /* Drag handle */
   .drag-handle {
     width: 22px;
     height: 28px;
@@ -253,7 +252,6 @@
     background: var(--text-muted);
   }
 
-  /* Dragging states */
   .item-card.drag-ready {
     box-shadow: var(--shadow-lg);
     border-left-color: var(--primary);
@@ -344,7 +342,6 @@
   }
   .item-del:active { background: #fee; color: var(--accent2); }
 
-  /* Inline edit mode */
   .edit-name-input {
     flex: 1;
     border: 2px solid var(--primary);
@@ -648,6 +645,204 @@
     margin: 8px 0 4px;
     opacity: 0.7;
   }
+
+  /* ---- SCAN VIEW ---- */
+  .scan-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+  .scan-card h3 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .scan-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .scan-drop-zone {
+    border: 3px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: var(--bg);
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .scan-drop-zone:hover,
+  .scan-drop-zone.drag-over {
+    border-color: var(--primary);
+    background: var(--surface2);
+  }
+  .scan-drop-zone .drop-icon {
+    font-size: 2.8rem;
+    margin-bottom: 8px;
+  }
+  .scan-drop-zone .drop-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .scan-drop-zone .drop-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .scan-preview-area {
+    display: none;
+    margin-bottom: 14px;
+  }
+  .scan-preview-area.visible { display: block; }
+  .scan-preview-img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+    background: #fafafa;
+  }
+  .scan-preview-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .scan-api-key-row {
+    margin-bottom: 14px;
+  }
+  .scan-api-key-row label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .api-key-input-wrap {
+    display: flex;
+    gap: 8px;
+  }
+  .api-key-input {
+    flex: 1;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+  }
+  .api-key-input:focus { border-color: var(--primary); }
+  .api-key-toggle {
+    width: 44px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .api-key-saved-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 4px;
+  }
+
+  .scan-progress {
+    display: none;
+    text-align: center;
+    padding: 24px 0;
+  }
+  .scan-progress.visible { display: block; }
+  .scan-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .scan-progress-text {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .scan-progress-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .scan-results {
+    display: none;
+  }
+  .scan-results.visible { display: block; }
+  .scan-result-item {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--shadow);
+    animation: slideIn 0.2s ease;
+    border-left: 4px solid var(--primary-light);
+  }
+  .scan-result-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 2.5px solid var(--primary);
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 900;
+    transition: all 0.15s;
+  }
+  .scan-result-check.unchecked {
+    background: transparent;
+    color: transparent;
+  }
+  .scan-result-check.unchecked:hover {
+    background: var(--surface2);
+  }
+  .scan-result-name {
+    flex: 1;
+    font-weight: 700;
+    font-size: 0.93rem;
+  }
+  .scan-result-qty {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
 </style>
 </head>
 <body>
@@ -656,7 +851,8 @@
   <div class="tab-bar">
     <button class="tab-btn active" onclick="showView('lista')">Lista</button>
     <button class="tab-btn" onclick="showView('lisaa')">+ Lisää</button>
-    <button class="tab-btn" onclick="showView('suosikit')">⭐ Suosikit</button>
+    <button class="tab-btn" onclick="showView('skannaa')">📷 Skannaa</button>
+    <button class="tab-btn" onclick="showView('suosikit')">⭐</button>
     <button class="tab-btn" onclick="showView('sheets')">Sheets</button>
   </div>
 </div>
@@ -691,6 +887,53 @@
 
   <p class="section-title">Lisää suosikeista</p>
   <div id="quick-favs"></div>
+</div>
+
+<!-- SCAN VIEW -->
+<div class="view" id="view-skannaa">
+  <div class="scan-card">
+    <h3>📷 Skannaa ostoslista kuvasta</h3>
+    <p>Ota valokuva tai valitse kuva käsin- tai konekirjoitetusta ostoslistasta. Tekoäly tunnistaa tuotteet automaattisesti.</p>
+
+    <div class="scan-api-key-row">
+      <label>Anthropic API-avain</label>
+      <div class="api-key-input-wrap">
+        <input class="api-key-input" id="scan-api-key" type="password" placeholder="sk-ant-..." autocomplete="off">
+        <button class="api-key-toggle" id="api-key-toggle" onclick="toggleApiKeyVisibility()">👁</button>
+      </div>
+      <div class="api-key-saved-badge" id="api-key-saved" style="display:none;">✓ Tallennettu</div>
+    </div>
+
+    <div class="scan-drop-zone" id="scan-drop-zone" onclick="document.getElementById('scan-file-input').click()">
+      <div class="drop-icon">📸</div>
+      <div class="drop-text">Napauta ottaaksesi kuvan tai valitse tiedosto</div>
+      <div class="drop-hint">JPG, PNG — käsinkirjoitettu tai painettu lista</div>
+    </div>
+    <input type="file" id="scan-file-input" accept="image/*" capture="environment" style="display:none" onchange="handleScanFile(this)">
+
+    <div class="scan-preview-area" id="scan-preview-area">
+      <img class="scan-preview-img" id="scan-preview-img" alt="Esikatselu">
+      <div class="scan-preview-actions">
+        <button class="btn btn-primary" onclick="tunnistaTuotteet()" id="scan-go-btn">🔍 Tunnista tuotteet</button>
+        <button class="btn" style="background:var(--surface2);color:var(--text-muted);" onclick="resetScan()">✕ Peruuta</button>
+      </div>
+    </div>
+
+    <div class="scan-progress" id="scan-progress">
+      <div class="scan-spinner"></div>
+      <div class="scan-progress-text">Tunnistetaan tuotteita…</div>
+      <div class="scan-progress-sub">Claude analysoi kuvaa</div>
+    </div>
+  </div>
+
+  <div class="scan-results" id="scan-results">
+    <p class="section-title">Tunnistetut tuotteet</p>
+    <div class="item-list" id="scan-results-list"></div>
+    <div style="margin-top:12px;display:flex;gap:8px;">
+      <button class="btn btn-primary" onclick="lisaaSkannatut()">✅ Lisää valitut listalle</button>
+      <button class="btn" style="background:var(--surface2);color:var(--text-muted);" onclick="resetScan()">Peruuta</button>
+    </div>
+  </div>
 </div>
 
 <div class="view" id="view-suosikit">
@@ -745,6 +988,10 @@ let favQtys = {};
 let editingId = null;
 let editQty = 1;
 
+// Scan state
+let scanImageBase64 = null;
+let scanResults = [];
+
 function save() {
   localStorage.setItem('ostoslista', JSON.stringify(lista));
   localStorage.setItem('suosikit', JSON.stringify(suosikit));
@@ -755,7 +1002,7 @@ function showView(v) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
-  const idx = ['lista','lisaa','suosikit','sheets'].indexOf(v);
+  const idx = ['lista','lisaa','skannaa','suosikit','sheets'].indexOf(v);
   document.querySelectorAll('.tab-btn')[idx].classList.add('active');
   if (v === 'lista') renderLista();
   if (v === 'lisaa') renderQuickFavs();
@@ -763,6 +1010,14 @@ function showView(v) {
   if (v === 'sheets') {
     const u = document.getElementById('sheets-url');
     if (sheetsUrl) u.value = sheetsUrl;
+  }
+  if (v === 'skannaa') {
+    const savedKey = localStorage.getItem('anthropic_api_key') || '';
+    const inp = document.getElementById('scan-api-key');
+    if (savedKey) {
+      inp.value = savedKey;
+      document.getElementById('api-key-saved').style.display = 'block';
+    }
   }
 }
 
@@ -955,7 +1210,6 @@ function getDragCards() {
 }
 
 function handlePointerDown(e) {
-  // Only start from drag handle area
   const handle = e.target.closest('[data-drag-handle]');
   if (!handle) return;
   if (editingId) return;
@@ -982,7 +1236,6 @@ function startDrag(card, clientY) {
   const listEl = document.getElementById('unchecked-list');
   dragState.listEl = listEl;
 
-  // Create floating clone
   const clone = card.cloneNode(true);
   clone.classList.add('dragging');
   clone.style.left = rect.left + 'px';
@@ -991,11 +1244,9 @@ function startDrag(card, clientY) {
   document.body.appendChild(clone);
   dragState.dragEl = clone;
 
-  // Mark original as placeholder
   card.classList.add('drag-placeholder');
   dragState.placeholderEl = card;
 
-  // Vibrate on mobile
   if (navigator.vibrate) navigator.vibrate(30);
 
   card.classList.add('drag-ready');
@@ -1018,22 +1269,18 @@ function handlePointerMove(e) {
   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
   dragState.currentY = clientY;
 
-  // Move floating element
   if (dragState.dragEl) {
     dragState.dragEl.style.top = (clientY - dragState.offsetY) + 'px';
   }
 
-  // Find position among cards
   const listEl = dragState.listEl;
   if (!listEl) return;
   const cards = Array.from(listEl.querySelectorAll('.item-card:not(.drag-placeholder)'));
 
-  // Clear all indicators
   cards.forEach(c => {
     c.classList.remove('drag-over-above', 'drag-over-below');
   });
 
-  // Find the insert target
   let insertBefore = null;
   for (const c of cards) {
     const r = c.getBoundingClientRect();
@@ -1065,17 +1312,13 @@ function handlePointerUp(e) {
 
   if (listEl) {
     const cards = Array.from(listEl.querySelectorAll('.item-card:not(.drag-placeholder)'));
-
-    // Clear indicators
     cards.forEach(c => c.classList.remove('drag-over-above', 'drag-over-below'));
 
-    // Find insert position among unchecked items
     const unchecked = lista.filter(i => !i.checked);
     const draggedItem = lista.find(i => i.id === dragState.itemId);
 
     if (draggedItem) {
-      // Determine new index
-      let newIndex = unchecked.length - 1; // default: end
+      let newIndex = unchecked.length - 1;
 
       for (let ci = 0; ci < cards.length; ci++) {
         const c = cards[ci];
@@ -1088,15 +1331,12 @@ function handlePointerUp(e) {
         }
       }
 
-      // Remove dragged item from lista
       const oldGlobalIndex = lista.indexOf(draggedItem);
       lista.splice(oldGlobalIndex, 1);
 
-      // Rebuild: unchecked in new order + checked at end
       const remainingUnchecked = lista.filter(i => !i.checked);
       const checkedItems = lista.filter(i => i.checked);
 
-      // Clamp
       if (newIndex > remainingUnchecked.length) newIndex = remainingUnchecked.length;
       if (newIndex < 0) newIndex = 0;
 
@@ -1106,7 +1346,6 @@ function handlePointerUp(e) {
     }
   }
 
-  // Cleanup
   if (dragState.dragEl) {
     dragState.dragEl.remove();
   }
@@ -1123,7 +1362,6 @@ function handlePointerUp(e) {
   renderLista();
 }
 
-// Attach global listeners
 document.addEventListener('mousedown', handlePointerDown, { passive: true });
 document.addEventListener('mousemove', handlePointerMove, { passive: false });
 document.addEventListener('mouseup', handlePointerUp);
@@ -1292,6 +1530,233 @@ function parseCSVRow(row) {
   }
   result.push(cur);
   return result;
+}
+
+/* ---- SCAN / IMAGE RECOGNITION ---- */
+
+function toggleApiKeyVisibility() {
+  const inp = document.getElementById('scan-api-key');
+  const btn = document.getElementById('api-key-toggle');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function saveApiKey() {
+  const key = document.getElementById('scan-api-key').value.trim();
+  if (key) {
+    localStorage.setItem('anthropic_api_key', key);
+    document.getElementById('api-key-saved').style.display = 'block';
+  }
+}
+
+// Drag & drop on scan zone
+const dropZone = document.getElementById('scan-drop-zone');
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('drag-over');
+});
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    processImageFile(file);
+  }
+});
+
+function handleScanFile(input) {
+  const file = input.files[0];
+  if (file) processImageFile(file);
+}
+
+function processImageFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    scanImageBase64 = dataUrl.split(',')[1];
+
+    document.getElementById('scan-preview-img').src = dataUrl;
+    document.getElementById('scan-preview-area').classList.add('visible');
+    document.getElementById('scan-drop-zone').style.display = 'none';
+    document.getElementById('scan-results').classList.remove('visible');
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetScan() {
+  scanImageBase64 = null;
+  scanResults = [];
+  document.getElementById('scan-preview-area').classList.remove('visible');
+  document.getElementById('scan-drop-zone').style.display = '';
+  document.getElementById('scan-progress').classList.remove('visible');
+  document.getElementById('scan-results').classList.remove('visible');
+  document.getElementById('scan-file-input').value = '';
+}
+
+async function tunnistaTuotteet() {
+  const apiKey = document.getElementById('scan-api-key').value.trim();
+  if (!apiKey) {
+    toast('Syötä API-avain ensin!');
+    return;
+  }
+  if (!scanImageBase64) {
+    toast('Valitse kuva ensin!');
+    return;
+  }
+
+  // Save key
+  saveApiKey();
+
+  // Show progress
+  document.getElementById('scan-preview-area').classList.remove('visible');
+  document.getElementById('scan-progress').classList.add('visible');
+  document.getElementById('scan-go-btn').disabled = true;
+
+  // Detect media type from base64 header
+  const img = document.getElementById('scan-preview-img');
+  let mediaType = 'image/jpeg';
+  if (img.src.startsWith('data:image/png')) mediaType = 'image/png';
+  else if (img.src.startsWith('data:image/webp')) mediaType = 'image/webp';
+  else if (img.src.startsWith('data:image/gif')) mediaType = 'image/gif';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: mediaType,
+                data: scanImageBase64
+              }
+            },
+            {
+              type: 'text',
+              text: `Analysoi tämä kuva ostoslistasta. Tunnista kaikki tuotteet listasta. Kuva voi sisältää käsinkirjoitettua tai koneella kirjoitettua tekstiä.
+
+Vastaa AINOASTAAN JSON-muodossa ilman muuta tekstiä. Muoto:
+[{"name": "tuotteen nimi", "qty": 1}, ...]
+
+Säännöt:
+- Käytä suomenkielisiä nimiä jos mahdollista
+- Jos määrä näkyy, käytä sitä; muuten qty = 1
+- Tunnista myös epäselvä käsiala parhaasi mukaan
+- Jos kuvassa ei ole ostoslistaa, palauta tyhjä lista: []
+- Normalisoi tuotenimet (iso alkukirjain, ei ylimääräisiä välilyöntejä)
+- ÄLÄ lisää mitään selitystä, pelkkä JSON-taulukko`
+            }
+          ]
+        }]
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `API-virhe: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const textContent = data.content.find(c => c.type === 'text');
+    if (!textContent) throw new Error('Tyhjä vastaus API:lta');
+
+    // Parse JSON from response
+    let rawText = textContent.text.trim();
+    // Strip possible markdown code fences
+    rawText = rawText.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+
+    const items = JSON.parse(rawText);
+
+    if (!Array.isArray(items)) throw new Error('Vastaus ei ole lista');
+
+    scanResults = items.map((item, idx) => ({
+      name: String(item.name || '').trim(),
+      qty: Math.max(1, parseInt(item.qty) || 1),
+      selected: true,
+      id: idx
+    })).filter(i => i.name.length > 0);
+
+    document.getElementById('scan-progress').classList.remove('visible');
+
+    if (scanResults.length === 0) {
+      toast('Tuotteita ei tunnistettu kuvasta.');
+      resetScan();
+      return;
+    }
+
+    renderScanResults();
+    document.getElementById('scan-results').classList.add('visible');
+    toast(`📷 Tunnistettiin ${scanResults.length} tuotetta!`);
+
+  } catch (err) {
+    console.error('Scan error:', err);
+    document.getElementById('scan-progress').classList.remove('visible');
+    document.getElementById('scan-preview-area').classList.add('visible');
+    document.getElementById('scan-go-btn').disabled = false;
+    toast(`❌ ${err.message || 'Tunnistus epäonnistui'}`);
+  }
+}
+
+function renderScanResults() {
+  const cont = document.getElementById('scan-results-list');
+  let html = '';
+  scanResults.forEach((item, idx) => {
+    html += `<div class="scan-result-item" style="animation-delay:${idx * 0.05}s">
+      <button class="scan-result-check ${item.selected ? '' : 'unchecked'}"
+        onclick="toggleScanItem(${idx})">✓</button>
+      <span class="scan-result-name">${escHtml(item.name)}</span>
+      <span class="scan-result-qty">${item.qty} kpl</span>
+    </div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function toggleScanItem(idx) {
+  scanResults[idx].selected = !scanResults[idx].selected;
+  renderScanResults();
+}
+
+function lisaaSkannatut() {
+  const selected = scanResults.filter(i => i.selected);
+  if (!selected.length) {
+    toast('Valitse vähintään yksi tuote!');
+    return;
+  }
+
+  let added = 0;
+  selected.forEach(item => {
+    const existing = lista.find(i => i.name.toLowerCase() === item.name.toLowerCase() && !i.checked);
+    if (existing) {
+      existing.qty += item.qty;
+    } else {
+      lista.push({ id: Date.now() + Math.random(), name: item.name, qty: item.qty, checked: false });
+    }
+    added++;
+  });
+
+  save();
+  toast(`✅ ${added} tuotetta lisätty listalle!`);
+  resetScan();
+  setTimeout(() => showView('lista'), 600);
 }
 
 /* ---- SPEECH ---- */
