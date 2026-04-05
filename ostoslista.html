@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#2d9e5f">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Ostoslista">
 <title>Ostoslista</title>
 
-<!-- SVG favicon -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%232d9e5f'/%3E%3Crect x='2' y='2' width='508' height='508' rx='94' fill='none' stroke='%231e7a47' stroke-width='4'/%3E%3Crect x='120' y='80' width='272' height='352' rx='20' fill='white' opacity='0.95'/%3E%3Crect x='120' y='80' width='272' height='60' rx='20' fill='%231e7a47'/%3E%3Crect x='120' y='120' width='272' height='20' fill='%231e7a47'/%3E%3Ccircle cx='170' cy='200' r='14' fill='none' stroke='%232d9e5f' stroke-width='5'/%3E%3Crect x='200' y='192' width='150' height='8' rx='4' fill='%231a2e22' opacity='0.7'/%3E%3Crect x='200' y='208' width='90' height='6' rx='3' fill='%236b8f78' opacity='0.4'/%3E%3Ccircle cx='170' cy='260' r='14' fill='%232d9e5f'/%3E%3Cpath d='M163 260l5 5 10-10' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='200' y='252' width='130' height='8' rx='4' fill='%236b8f78' opacity='0.4'/%3E%3Ccircle cx='170' cy='320' r='14' fill='none' stroke='%232d9e5f' stroke-width='5'/%3E%3Crect x='200' y='312' width='170' height='8' rx='4' fill='%231a2e22' opacity='0.7'/%3E%3Crect x='200' y='328' width='100' height='6' rx='3' fill='%236b8f78' opacity='0.4'/%3E%3Ccircle cx='170' cy='380' r='14' fill='%232d9e5f'/%3E%3Cpath d='M163 380l5 5 10-10' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='200' y='372' width='110' height='8' rx='4' fill='%236b8f78' opacity='0.4'/%3E%3C/svg%3E" />
-
-<link rel="apple-touch-icon" id="appleTouchIcon" />
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
 
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
 <style>
@@ -2265,9 +2265,13 @@ function escHtml(s) {
 }
 
 renderLista();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
 </script>
 
-<!-- Web App Manifest & ikoni-generointi -->
+<!-- POISTETTU: dynaaminen manifest-generointi (korvattu manifest.json + sw.js tiedostoilla) -->
 <script>
 (function() {
   function generateIcon(size) {
@@ -2370,32 +2374,10 @@ renderLista();
     return c.toDataURL('image/png');
   }
 
+  // Ikonit luodaan edelleen apple-touch-icon -käyttöä varten
   const icon192 = generateIcon(192);
-  const icon512 = generateIcon(512);
-
-  const appleLink = document.getElementById('appleTouchIcon');
+  const appleLink = document.querySelector('link[rel="apple-touch-icon"]');
   if (appleLink) appleLink.href = icon192;
-
-  const manifest = {
-    id: './',
-    name: 'Ostoslista',
-    short_name: 'Ostoslista',
-    description: 'Ostoslista',
-    start_url: './',
-    display: 'standalone',
-    background_color: '#f0faf4',
-    theme_color: '#2d9e5f',
-    icons: [
-      { src: icon192, sizes: '192x192', type: 'image/png' },
-      { src: icon512, sizes: '512x512', type: 'image/png' }
-    ]
-  };
-
-  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-  const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = URL.createObjectURL(blob);
-  document.head.appendChild(link);
 })();
 </script>
 </body>

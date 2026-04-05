@@ -1,0 +1,26 @@
+{
+  "name": "Ostoslista",
+  "short_name": "Ostoslista",
+  "description": "Ostoslista Google Sheets -integraatiolla",
+  "start_url": "./ostoslista.html",
+  "id": "./ostoslista.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f0faf4",
+  "theme_color": "#2d9e5f",
+  "lang": "fi",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
