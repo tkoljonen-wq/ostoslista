@@ -1,4 +1,4 @@
-const CACHE = 'ostoslista-v1';
+const CACHE = 'ostoslista-v2';
 const ASSETS = [
   './ostoslista.html',
   './manifest.json',
@@ -22,9 +22,18 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+// Network first: hae aina ensin verkosta, käytä välimuistia vain offline-tilassa.
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request)
+      .then(resp => {
+        if (resp.ok) {
+          const copy = resp.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy));
+        }
+        return resp;
+      })
+      .catch(() => caches.match(e.request))
   );
 });

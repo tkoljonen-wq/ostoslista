@@ -2,7 +2,7 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#2d9e5f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -961,7 +961,7 @@ function handlePointerDown(e) {
   const card = handle.closest('.item-card');
   if (!card || card.classList.contains('checked')) return;
 
-  const id = parseInt(card.dataset.id);
+  const id = Number(card.dataset.id);
   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
   const rect = card.getBoundingClientRect();
 
@@ -1058,31 +1058,28 @@ function handlePointerUp(e) {
     const cards = Array.from(listEl.querySelectorAll('.item-card:not(.drag-placeholder)'));
     cards.forEach(c => c.classList.remove('drag-over-above', 'drag-over-below'));
 
-    const unchecked = lista.filter(i => !i.checked);
     const draggedItem = lista.find(i => i.id === dragState.itemId);
 
     if (draggedItem) {
-      let newIndex = unchecked.length - 1;
-
-      for (let ci = 0; ci < cards.length; ci++) {
-        const c = cards[ci];
-        const r = c.getBoundingClientRect();
-        const mid = r.top + r.height / 2;
-        if (clientY < mid) {
-          const targetId = parseInt(c.dataset.id);
-          newIndex = unchecked.findIndex(i => i.id === targetId);
-          break;
-        }
-      }
-
       const oldGlobalIndex = lista.indexOf(draggedItem);
       lista.splice(oldGlobalIndex, 1);
 
       const remainingUnchecked = lista.filter(i => !i.checked);
       const checkedItems = lista.filter(i => i.checked);
 
-      if (newIndex > remainingUnchecked.length) newIndex = remainingUnchecked.length;
-      if (newIndex < 0) newIndex = 0;
+      let newIndex = remainingUnchecked.length;
+
+      for (let ci = 0; ci < cards.length; ci++) {
+        const c = cards[ci];
+        const r = c.getBoundingClientRect();
+        const mid = r.top + r.height / 2;
+        if (clientY < mid) {
+          const targetId = Number(c.dataset.id);
+          const ti = remainingUnchecked.findIndex(i => i.id === targetId);
+          if (ti !== -1) newIndex = ti;
+          break;
+        }
+      }
 
       remainingUnchecked.splice(newIndex, 0, draggedItem);
       lista = [...remainingUnchecked, ...checkedItems];
@@ -1229,12 +1226,11 @@ async function haeSheets() {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('Verkkovirhe');
     const text = await resp.text();
-    const rows = text.trim().split('\n').slice(1);
+    const rows = parseCSV(text.trim()).slice(1);
     let added = 0, favAdded = 0;
 
-    rows.forEach(row => {
-      const cols = parseCSVRow(row);
-      if (!cols[0]) return;
+    rows.forEach(cols => {
+      if (!cols[0] || !cols[0].trim()) return;
       const name = cols[0].trim();
       const qty = parseInt(cols[1]) || 1;
       const isFav = (cols[2] || '').trim().toLowerCase() === 'kyllä';
@@ -1264,16 +1260,23 @@ function avaaSheetsPohja() {
   toast('📋 Sheets avautui! Lisää sarakkeet: Tuote | Kpl | Suosikki');
 }
 
-function parseCSVRow(row) {
-  const result = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < row.length; i++) {
-    if (row[i] === '"') { inQ = !inQ; }
-    else if (row[i] === ',' && !inQ) { result.push(cur); cur = ''; }
-    else cur += row[i];
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQ) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { cur += '"'; i++; }
+        else inQ = false;
+      } else cur += ch;
+    } else if (ch === '"') { inQ = true; }
+    else if (ch === ',') { row.push(cur); cur = ''; }
+    else if (ch === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+    else if (ch !== '\r') { cur += ch; }
   }
-  result.push(cur);
-  return result;
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows;
 }
 
 /* ---- SPEECH ---- */
@@ -1330,11 +1333,13 @@ function lopetaUI() {
   }, 1500);
 }
 
+let toastTimer = null;
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 function escHtml(s) {
@@ -1348,114 +1353,5 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<!-- POISTETTU: dynaaminen manifest-generointi (korvattu manifest.json + sw.js tiedostoilla) -->
-<script>
-(function() {
-  function generateIcon(size) {
-    const c = document.createElement('canvas');
-    c.width = size; c.height = size;
-    const ctx = c.getContext('2d');
-    const s = size / 512;
-
-    const r = 96 * s;
-    ctx.fillStyle = '#2d9e5f';
-    ctx.beginPath();
-    ctx.moveTo(r, 0);
-    ctx.lineTo(size - r, 0); ctx.quadraticCurveTo(size, 0, size, r);
-    ctx.lineTo(size, size - r); ctx.quadraticCurveTo(size, size, size - r, size);
-    ctx.lineTo(r, size); ctx.quadraticCurveTo(0, size, 0, size - r);
-    ctx.lineTo(0, r); ctx.quadraticCurveTo(0, 0, r, 0);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = '#1e7a47';
-    ctx.lineWidth = 4 * s;
-    ctx.stroke();
-
-    const cardX = 120 * s, cardY = 70 * s;
-    const cardW = 272 * s, cardH = 370 * s;
-    const cardR = 20 * s;
-    ctx.fillStyle = 'rgba(255,255,255,0.95)';
-    ctx.beginPath();
-    ctx.moveTo(cardX + cardR, cardY);
-    ctx.lineTo(cardX + cardW - cardR, cardY); ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + cardR);
-    ctx.lineTo(cardX + cardW, cardY + cardH - cardR); ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - cardR, cardY + cardH);
-    ctx.lineTo(cardX + cardR, cardY + cardH); ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - cardR);
-    ctx.lineTo(cardX, cardY + cardR); ctx.quadraticCurveTo(cardX, cardY, cardX + cardR, cardY);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = '#1e7a47';
-    ctx.beginPath();
-    ctx.moveTo(cardX + cardR, cardY);
-    ctx.lineTo(cardX + cardW - cardR, cardY); ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + cardR);
-    ctx.lineTo(cardX + cardW, cardY + 60 * s);
-    ctx.lineTo(cardX, cardY + 60 * s);
-    ctx.lineTo(cardX, cardY + cardR); ctx.quadraticCurveTo(cardX, cardY, cardX + cardR, cardY);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = 'white';
-    ctx.font = `bold ${18 * s}px sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('OSTOSLISTA', 256 * s, cardY + 30 * s);
-
-    const rows = [
-      { y: 175, checked: false },
-      { y: 245, checked: true },
-      { y: 315, checked: false },
-      { y: 385, checked: true },
-    ];
-
-    rows.forEach(row => {
-      const cy = row.y * s;
-      const cx = 170 * s;
-      const cr = 14 * s;
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, cr, 0, Math.PI * 2);
-      if (row.checked) {
-        ctx.fillStyle = '#2d9e5f';
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo((cx - 6 * s), cy);
-        ctx.lineTo((cx - 1 * s), cy + 6 * s);
-        ctx.lineTo((cx + 8 * s), cy - 5 * s);
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 4 * s;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
-      } else {
-        ctx.strokeStyle = '#2d9e5f';
-        ctx.lineWidth = 4 * s;
-        ctx.stroke();
-      }
-
-      const textX = 200 * s;
-      ctx.fillStyle = row.checked ? 'rgba(107,143,120,0.4)' : 'rgba(26,46,34,0.7)';
-      const barW = (120 + Math.random() * 80) * s;
-      ctx.beginPath();
-      ctx.roundRect(textX, cy - 5 * s, barW, 8 * s, 4 * s);
-      ctx.fill();
-
-      if (!row.checked) {
-        ctx.fillStyle = 'rgba(107,143,120,0.3)';
-        ctx.beginPath();
-        ctx.roundRect(textX, cy + 10 * s, barW * 0.6, 5 * s, 3 * s);
-        ctx.fill();
-      }
-    });
-
-    return c.toDataURL('image/png');
-  }
-
-  // Ikonit luodaan edelleen apple-touch-icon -käyttöä varten
-  const icon192 = generateIcon(192);
-  const appleLink = document.querySelector('link[rel="apple-touch-icon"]');
-  if (appleLink) appleLink.href = icon192;
-})();
-</script>
 </body>
 </html>
