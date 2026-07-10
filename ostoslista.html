@@ -916,6 +916,9 @@ function toggleCheck(id) {
 }
 
 function deleteItem(id) {
+  const item = lista.find(i => i.id === id);
+  if (!item) return;
+  if (!confirm(`Poistetaanko ${item.name} listalta?`)) return;
   lista = lista.filter(i => i.id !== id);
   save(); renderLista();
 }
